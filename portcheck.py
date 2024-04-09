@@ -1,21 +1,18 @@
 import socket
 
-def find_available_port(start_port):
-    end_port = 65535  # Maximum port number
+def is_port_available(port):
+    try:
+        # Try to create a socket with the given port
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(("localhost", port))
+        return True
+    except OSError:
+        # Port is not available
+        return False
 
-    for port in range(start_port, end_port + 1):
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.bind(("127.0.0.1", port))
-            return port
-        except OSError:
-            pass
-    return None
-
-start_port = 8501  # Starting port number
-port = find_available_port(start_port)
-
-if port:
-    print(f"Available port found: {port}")
+# Example usage
+port = 8501  # Port to check
+if is_port_available(port):
+    print(f"Port {port} is available")
 else:
-    print("No available port found.")
+    print(f"Port {port} is not available")
