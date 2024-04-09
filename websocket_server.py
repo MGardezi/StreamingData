@@ -58,12 +58,5 @@ async def serve():
     await start_server
 
 # Streamlit app
-def main():
-    st.title("WebSocket Server")
-    st.write("This app runs a WebSocket server.")
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(serve())
-    loop.run_forever()
-
-if __name__ == "__main__":
-    main()
+asyncio.get_event_loop().run_until_complete(serve())
+asyncio.get_event_loop().run_forever()
