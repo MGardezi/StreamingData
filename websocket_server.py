@@ -20,6 +20,7 @@ url = 'https://raw.githubusercontent.com/MGardezi/StreamingData/Master/data.xlsx
 
 # Attempt to download and load the Excel file into a DataFrame
 dataframe = download_and_load_excel(url)
+
 if dataframe is None:
     raise Exception("Failed to download or load the Excel file.")
 
@@ -58,7 +59,7 @@ async def unregister_client(websocket):
 
 async def serve():
     # Let the system choose a random available port
-    start_server = websockets.serve(time_server, "35.201.127.49",443)
+    start_server = websockets.serve(time_server, "https://streamingdataserver.streamlit.app/")
     # 443 is the default port for HTTPS, which may be used by Streamlit
     await start_server
     st.write("WebSocket server is running and serving data.")
