@@ -61,6 +61,15 @@ async def serve():
     start_server = websockets.serve(time_server, "0.0.0.0", 42424)
     await start_server
 
-asyncio.get_event_loop().run_until_complete(serve())
-asyncio.get_event_loop().run_forever()
+#asyncio.get_event_loop().run_until_complete(serve())
+#asyncio.get_event_loop().run_forever()
 
+# Create a new event loop
+loop = asyncio.new_event_loop()
+# Set the new event loop as the current event loop
+asyncio.set_event_loop(loop)
+
+# Run the serve() function using the new event loop
+loop.run_until_complete(serve())
+# Start the event loop
+loop.run_forever()
