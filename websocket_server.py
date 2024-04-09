@@ -1,14 +1,27 @@
 import asyncio
 from urllib.parse import parse_qs, urlparse
+import requests
 import websockets
 import pandas as pd
-import os
+import streamlit as st
+import io
 
-# Load the Excel data
-# path_to_file = os.path.join('C:\\', 'Users', 'muhammad', 'Desktop', 'Pyhton', 'Pyhton', 'py', 'data.xlsx')
-#path_to_file = os.path.join('C:\\', 'Users', 'muhammad', 'Desktop', 'Pyhton', 'Pyhton', 'py', 'data.xlsx')
-path_to_file = os.path.join(os.path.dirname(__file__), 'data', 'air_beijing_data.xlsx')
-dataframe = pd.read_excel(path_to_file)
+def download_and_load_excel(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return pd.read_excel(io.BytesIO(response.content), engine='openpyxl')
+    except (requests.RequestException, pd.errors.ParserError) as e:
+        st.error(f"Failed to download or load the Excel file: {e}")
+        return None
+
+# URL to the raw content of the Excel file
+url = 'https://raw.githubusercontent.com/MGardezi/StreamingData/Master/data.xlsx'
+
+# Attempt to download and load the Excel file into a DataFrame
+dataframe = download_and_load_excel(url)
+if dataframe is None:
+    raise Exception("Failed to download or load the Excel file.")
 
 connected_clients = set()
 
@@ -44,8 +57,22 @@ async def unregister_client(websocket):
     connected_clients.remove(websocket)
 
 async def serve():
-    start_server = websockets.serve(time_server, "localhost", 42424)
+    # Let the system choose a random available port
+    start_server = websockets.serve(time_server, "35.201.127.49",443)
+    # 443 is the default port for HTTPS, which may be used by Streamlit
     await start_server
+    st.write("WebSocket server is running and serving data.")
 
-asyncio.get_event_loop().run_until_complete(serve())
-asyncio.get_event_loop().run_forever()
+
+#asyncio.get_event_loop().run_until_complete(serve())
+#asyncio.get_event_loop().run_forever()
+
+# Create a new event loop
+loop = asyncio.new_event_loop()
+# Set the new event loop as the current event loop
+asyncio.set_event_loop(loop)
+
+# Run the serve() function using the new event loop
+loop.run_until_complete(serve())
+# Start the event loop
+loop.run_forever()
