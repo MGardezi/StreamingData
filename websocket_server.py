@@ -58,7 +58,8 @@ async def unregister_client(websocket):
 
 async def serve():
     #start_server = websockets.serve(time_server, "localhost", 42424)
-    start_server = websockets.serve(time_server, "0.0.0.0", 42424)
+    start_server = websockets.serve(time_server, "0.0.0.0", 42425)
+    
     await start_server
 
 #asyncio.get_event_loop().run_until_complete(serve())
