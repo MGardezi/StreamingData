@@ -1,4 +1,5 @@
 import asyncio
+from urllib.parse import parse_qs, urlparse
 import requests
 import websockets
 import pandas as pd
@@ -34,11 +35,15 @@ async def time_server(websocket, path):
     await register_client(websocket)
     print("Client connected.")
     try:
-        for index in range(0, min(len(dataframe), 4000), 5):
+        # Get the start index from the query parameters
+        query = parse_qs(urlparse(path).query)
+        start_index = int(query.get('start', [0])[0])
+
+        for index in range(start_index, min(len(dataframe), 4000), 5):
             window_data = dataframe.iloc[index:index+5].to_json(orient='records')
             await websocket.send(window_data)
             print(f"Sent data window starting at index {index}")
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
@@ -52,11 +57,10 @@ async def unregister_client(websocket):
     connected_clients.remove(websocket)
 
 async def serve():
-    # Let the system choose a random available port
+    #start_server = websockets.serve(time_server, "localhost", 42424)
     start_server = websockets.serve(time_server, "0.0.0.0", 42424)
-    # 0.0.0.0 means that the server will be accessible to any IP address
     await start_server
 
-# Streamlit app
 asyncio.get_event_loop().run_until_complete(serve())
 asyncio.get_event_loop().run_forever()
+
