@@ -59,7 +59,7 @@ async def unregister_client(websocket):
 
 async def serve():
     # Let the system choose a random available port
-    start_server = websockets.serve(time_server, "localhost", 8080)
+    start_server = websockets.serve(time_server, "localhost", 8502)
     # 443 is the default port for HTTPS, which may be used by Streamlit
     await start_server
     st.write("WebSocket server is running and serving data.")
