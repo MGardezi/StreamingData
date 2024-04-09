@@ -57,10 +57,12 @@ async def unregister_client(websocket):
     connected_clients.remove(websocket)
 
 async def serve():
-    #start_server = websockets.serve(time_server, "localhost", 42424)
-    start_server = websockets.serve(time_server, "0.0.0.0", 42425)
-    
+    # Let the system choose a random available port
+    start_server = websockets.serve(time_server, "streamingdataserver.streamlit.app", 443)
+    # 443 is the default port for HTTPS, which may be used by Streamlit
     await start_server
+    st.write("WebSocket server is running and serving data.")
+
 
 #asyncio.get_event_loop().run_until_complete(serve())
 #asyncio.get_event_loop().run_forever()
