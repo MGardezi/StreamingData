@@ -50,6 +50,8 @@ async def time_server(websocket, path):
             await asyncio.sleep(2)
     except websockets.exceptions.ConnectionClosed:
         pass
+    except asyncio.CancelledError:
+        print("Task was cancelled")
     finally:
         await unregister_client(websocket)
         print("Client disconnected.")
