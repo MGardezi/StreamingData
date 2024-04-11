@@ -24,6 +24,9 @@ dataframe = download_and_load_excel(url)
 if dataframe is None:
     raise Exception("Failed to download or load the Excel file.")
 
+# Print the DataFrame
+st.write("Data from the Excel file:", dataframe)
+
 connected_clients = set()
 
 async def handle_message(websocket, path):
@@ -59,15 +62,10 @@ async def unregister_client(websocket):
 
 async def serve():
     # Let the system choose a random available port
-    #start_server = websockets.serve(time_server, "localhost", 8502)
-    start_server = websockets.serve(time_server, "localhost",8502)
+    start_server = websockets.serve(time_server, "localhost", 8502)
     # 443 is the default port for HTTPS, which may be used by Streamlit
     await start_server
     st.write("WebSocket server is running and serving data.")
-
-
-#asyncio.get_event_loop().run_until_complete(serve())
-#asyncio.get_event_loop().run_forever()
 
 # Create a new event loop
 loop = asyncio.new_event_loop()
